@@ -6,11 +6,11 @@ import javax.inject.Inject
 
 class SignupUseCase @Inject constructor(private val userRepository: UserRepository) {
     suspend fun signup(name: String, mail: String, password: String): Boolean {
-        if(!userRepository.checkIfEmailIsFound(mail)){
+        return if(!userRepository.checkIfEmailIsFound(mail)){
             userRepository.signup(User(name=name, email=mail, password=password))
-            return true
+            true
         }else{
-            return false
+            false
         }
     }
 }

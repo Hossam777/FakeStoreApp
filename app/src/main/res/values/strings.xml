@@ -7,4 +7,6 @@
     <string name="login">Login</string>
     <string name="here">Here</string>
     <string name="to_signup_click">To Signup click</string>
+    <string name="name">Name</string>
+    <string name="signup">Signup</string>
 </resources>

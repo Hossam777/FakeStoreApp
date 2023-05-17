@@ -23,29 +23,7 @@ class AuthViewModel @Inject constructor(
     var errMessage: MutableLiveData<String> = MutableLiveData()
     var user: MutableLiveData<User> = MutableLiveData()
 
-    fun validateData(email: String, password: String, name: String?): Boolean {
-        var message = ""
-        when{
-            !email.isValidEmail() -> {
-                message += "Email is not valid, "
-            }
-            !password.isValidPassword() -> {
-                message += "password must be at least 8 characters, "
-            }
-        }
-        if(name != null){
-            if(name .length >= 3)
-                message += "name must be at least 3 characters, "
-        }
-        if(message.isEmpty())
-            return true
-        errMessage.postValue(message.substring(0, message.length - 2))
-        return false
-    }
-
     fun login(email: String, password: String){
-        if(!validateData(email, password, null))
-            return
         isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             loginUseCase.login(email, password)
@@ -55,21 +33,21 @@ class AuthViewModel @Inject constructor(
                     user.postValue(it)
                     isLoading.postValue(false)
                 }, {
-                    errMessage.postValue(it.localizedMessage)
+                    errMessage.postValue("Wrong Credentials!")
                     println(it.localizedMessage)
                     isLoading.postValue(false)
                 })
         }
     }
     fun signup(name: String, email: String, password: String){
-        if(!validateData(email, password, name))
-            return
         isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             if(signupUseCase.signup(name, email,password)){
                 user.postValue(User(name=name, email = email, password = password))
+                isLoading.postValue(false)
             }else{
-                errMessage.postValue("Email is registered")
+                errMessage.postValue("Email is already registered")
+                isLoading.postValue(false)
             }
         }
     }

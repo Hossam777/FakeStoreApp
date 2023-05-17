@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.example.fakestoreapp.utils.NetworkManager
 import com.example.fakestoreapp.utils.hideKeyboard
 import com.example.fakestoreapp.utils.isValidEmail
@@ -32,14 +33,21 @@ class LoginFragment : Fragment() {
         binding.loginBtn.setOnClickListener {
             if(authViewModel.isLoading.value == true) return@setOnClickListener
             activity?.currentFocus?.hideKeyboard()
-            authViewModel.login(binding.emailET.text.toString()
-                ,binding.passwordET.text.toString())
+            val email = binding.emailET.text.toString()
+            val password = binding.passwordET.text.toString()
+            if(validateData(email, password)){
+                authViewModel.login(email,password)
+            }
+        }
+        binding.signupBtn.setOnClickListener {
+            findNavController().navigate(R.id.navigateToSignupScreen)
         }
         authViewModel.errMessage.observe(viewLifecycleOwner){
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
         authViewModel.user.observe(viewLifecycleOwner){
-            //navigate
+            //navigate to home
+            Toast.makeText(requireContext(), "Loggedin", Toast.LENGTH_SHORT).show()
         }
         authViewModel.isLoading.observe(viewLifecycleOwner){
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
@@ -55,6 +63,23 @@ class LoginFragment : Fragment() {
         binding.passwordET.addTextChangedListener {
             binding.passwordTL.isErrorEnabled = false
         }
+    }
+
+    fun validateData(email: String, password: String): Boolean {
+        var valid = true
+        when{
+            !email.isValidEmail() -> {
+                binding.emailTL.error = "Email is not valid."
+                valid = false
+            }
+            !password.isValidPassword() -> {
+                binding.passwordTL.error = "password must be at least 8 characters."
+                valid = false
+            }
+        }
+        if(valid)
+            return true
+        return false
     }
     companion object {
         @JvmStatic
