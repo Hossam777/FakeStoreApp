@@ -3,7 +3,8 @@ package com.example.fakestoreapp.di
 import com.example.fakestoreapp.data.remote.NetworkManager
 import com.example.fakestoreapp.data.repositories.ProductsRepository
 import com.example.fakestoreapp.ui.home.HomeViewModel
-import com.example.fakestoreapp.usecases.GetAllProductsUseCase
+import com.example.fakestoreapp.usecases.GetAllCategoriesUseCase
+import com.example.fakestoreapp.usecases.GetProductsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,8 +18,13 @@ object HomeModule {
     = ProductsRepository(networkManager)
 
     @Provides
-    fun provideGetAllProductsUseCase(productsRepository: ProductsRepository): GetAllProductsUseCase
-    = GetAllProductsUseCase(productsRepository)
+    fun provideGetProductsUseCase(productsRepository: ProductsRepository): GetProductsUseCase
+    = GetProductsUseCase(productsRepository)
 
-    fun provideHomeViewModel(getAllProductsUseCase: GetAllProductsUseCase): HomeViewModel = HomeViewModel(getAllProductsUseCase)
+    @Provides
+    fun provideGetAllCategoriesUseCase(productsRepository: ProductsRepository): GetAllCategoriesUseCase
+            = GetAllCategoriesUseCase(productsRepository)
+    fun provideHomeViewModel(getProductsUseCase: GetProductsUseCase
+                             , getAllCategoriesUseCase: GetAllCategoriesUseCase): HomeViewModel
+    = HomeViewModel(getProductsUseCase, getAllCategoriesUseCase)
 }

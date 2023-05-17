@@ -63,8 +63,8 @@ object AppModule {
                     chain.proceed(request)
                 })
                 .addInterceptor(loggingInterceptor)
-                .connectTimeout(3, TimeUnit.MINUTES)
-                .readTimeout(3, TimeUnit.MINUTES).build()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS).build()
         } else {
             OkHttpClient.Builder()
                 .addInterceptor(Interceptor { chain: Interceptor.Chain ->
