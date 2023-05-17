@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.FakeStoreApp" parent="Theme.MaterialComponents.Light.NoActionBar" />
+    <style name="Theme.FakeStoreApp" parent="Theme.MaterialComponents.Light.NoActionBar" >
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorSecondary">@color/light_blue</item>
+    </style>
+
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/light_blue</item>
+        <item name="boxStrokeWidth">3dp</item>
+        <item name="hintTextColor">@color/light_blue</item>
+        <item name="android:textColorHint">@color/gray</item>
+        <item name="boxBackgroundColor">@color/white</item>
+    </style>
 </resources>
