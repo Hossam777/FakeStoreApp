@@ -7,10 +7,11 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/authFragmentView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.fakestoreapp.ui.authentication.AuthenticationActivity">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:navGraph="@navigation/auth_nav_graph"
+        app:defaultNavHost="true"/>
 </layout>
