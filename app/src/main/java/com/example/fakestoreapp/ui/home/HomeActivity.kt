@@ -1,6 +1,5 @@
 package com.example.fakestoreapp.ui.home
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fakestoreapp.bases.BaseActivity
 import com.example.fakestoreapp.data.models.Product
 import com.example.fakestoreapp.ui.home.adapters.CategoryRecyclerAdapter
-import com.example.fakestoreapp.ui.home.adapters.HorizontalProductRecyclerAdapter
-import com.example.fakestoreapp.ui.home.adapters.VerticalProductRecyclerAdapter
+import com.example.fakestoreapp.ui.home.adapters.ProductRecyclerAdapter
 import com.example.imageclassification.R
 import com.example.imageclassification.databinding.ActivityHomeBinding
 import com.example.imageclassification.databinding.CategoriesDialogBinding
@@ -23,8 +21,8 @@ import javax.inject.Inject
 class HomeActivity : BaseActivity() {
     private val binding: ActivityHomeBinding by binding(R.layout.activity_home)
     @Inject lateinit var homeViewModel: HomeViewModel
-    private lateinit var horizontalProductsAdapter: HorizontalProductRecyclerAdapter
-    private lateinit var verticalProductsAdapter: VerticalProductRecyclerAdapter
+    private lateinit var horizontalProductsAdapter: ProductRecyclerAdapter
+    private lateinit var verticalProductsAdapter: ProductRecyclerAdapter
     private lateinit var categoriesAdapter: CategoryRecyclerAdapter
     private lateinit var productsDialog: MaterialAlertDialogBuilder
     private lateinit var categoriesDialog: MaterialAlertDialogBuilder
@@ -46,16 +44,21 @@ class HomeActivity : BaseActivity() {
         val productsDialog = productsDialog.show()
         productsDialog.dismiss()
 
+        homeViewModel.getSavedProducts()
         homeViewModel.getAllCategories()
         homeViewModel.getProducts()
 
         //initializing adapters
-        horizontalProductsAdapter = HorizontalProductRecyclerAdapter {
+        horizontalProductsAdapter = ProductRecyclerAdapter(false, resources, {
             showProductDialog(productsDialog, productsBindingDialog, it)
-        }
-        verticalProductsAdapter = VerticalProductRecyclerAdapter {
+        }, { product, fav ->
+            handleSavingProducts(product, fav)
+        })
+        verticalProductsAdapter = ProductRecyclerAdapter(true, resources, {
             showProductDialog(productsDialog, productsBindingDialog, it)
-        }
+        }, { product, fav ->
+            handleSavingProducts(product, fav)
+        })
         categoriesAdapter = CategoryRecyclerAdapter(resources) {
             categoriesDialog.dismiss()
             var products = mutableListOf<Product>()
@@ -64,8 +67,8 @@ class HomeActivity : BaseActivity() {
             }
             if(it == "ALL")
                 products = homeViewModel.products.value?.toMutableList()!!
-            horizontalProductsAdapter.setItems(products)
-            verticalProductsAdapter.setItems(products)
+            horizontalProductsAdapter.setItems(products, homeViewModel.savedProducts.value?.toMutableList()!!)
+            verticalProductsAdapter.setItems(products, homeViewModel.savedProducts.value?.toMutableList()!!)
         }
         binding.horizontalProductsRecycler.adapter = horizontalProductsAdapter
         binding.horizontalProductsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -75,9 +78,15 @@ class HomeActivity : BaseActivity() {
         categoriesBindingDialog.dialogRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         //initializing viewmodel observers
-        homeViewModel.products.observe(this){
-            horizontalProductsAdapter.setItems(it)
-            verticalProductsAdapter.setItems(it)
+        homeViewModel.dataSetUp.observe(this){
+            if(it == 2){
+                homeViewModel.products.value?.let { it1 ->
+                    homeViewModel.savedProducts.value?.let { it2 ->
+                        horizontalProductsAdapter.setItems(it1, it2.toMutableList())
+                        verticalProductsAdapter.setItems(it1, it2.toMutableList())
+                    }
+                }
+            }
         }
         homeViewModel.categories.observe(this){
             val categories = mutableListOf("ALL")
@@ -91,6 +100,13 @@ class HomeActivity : BaseActivity() {
         homeViewModel.isLoading.observe(this){
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         }
+        homeViewModel.savedProducts.observe(this){
+            println(it.toString())
+        }
+    }
+    private fun handleSavingProducts(product: Product, favourite: Boolean){
+        if(favourite) homeViewModel.addProductToSavedProducts(product)
+        else homeViewModel.deleteProductFromSavedProducts(product)
     }
     private fun showProductDialog(dialog: AlertDialog, productDialogBinding: ProductDialogBinding, product: Product){
         productDialogBinding.product = product

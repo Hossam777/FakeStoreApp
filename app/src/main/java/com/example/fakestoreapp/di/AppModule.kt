@@ -44,6 +44,9 @@ object AppModule {
     @Singleton
     @Provides
     fun provideUserDao(db: FakeStoreDatabase) = db.userDao()
+    @Singleton
+    @Provides
+    fun provideSavedProductsDao(db: FakeStoreDatabase) = db.savedProductsDao()
 
     @Provides
     fun provideBaseUrl() = NetworkConstants.BASE_URL
