@@ -27,10 +27,12 @@ class HomeViewModel @Inject constructor(
     var savedProducts: MutableLiveData<List<Product>> = MutableLiveData()
     var dataSetUp: MutableLiveData<Int> = MutableLiveData(0)
     var categories: MutableLiveData<List<String>> = MutableLiveData()
+    var sortStrategy: MutableLiveData<String> = MutableLiveData()
+    var limitProducts: MutableLiveData<Int> = MutableLiveData()
 
     fun getProducts(category: String? = null){
         isLoading.value = true
-        getProductsUseCase.getProducts(category)
+        getProductsUseCase.getAllProducts(category, limitProducts.value, sortStrategy.value)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->

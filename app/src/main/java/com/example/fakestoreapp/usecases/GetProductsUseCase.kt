@@ -6,7 +6,7 @@ import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class GetProductsUseCase@Inject constructor(private val productsRepository: ProductsRepository) {
-    fun getProducts(category: String?): Single<List<Product>> {
-        return productsRepository.getAllProducts(category)
+    fun getAllProducts(category: String?, limit: Int?, sort: String?): Single<List<Product>> {
+        return productsRepository.getAllProducts(category, limit, sort)
     }
 }

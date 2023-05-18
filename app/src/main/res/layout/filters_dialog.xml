@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rect_with_10_radius">
+        <RadioGroup
+            android:id="@+id/sortGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <RadioButton
+                android:id="@+id/sortASC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:paddingHorizontal="20dp"
+                android:text="ASC"
+                android:textSize="18sp"
+                android:textColor="@color/black" />
+            <RadioButton
+                android:id="@+id/sortDESC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:paddingHorizontal="20dp"
+                android:text="DESC"
+                android:textSize="18sp"
+                android:textColor="@color/black" />
+        </RadioGroup>
+        <SeekBar
+            android:id="@+id/limitSeekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:max="16"
+            android:layout_marginHorizontal="30dp"
+            app:layout_constraintTop_toBottomOf="@+id/sortGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/categoriesTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/limitSeekbar"
+            android:layout_margin="10dp"
+            android:text="@string/categories"
+            android:textSize="22sp"
+            android:textColor="@color/light_blue" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dialogRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/categoriesTxt"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="10dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
