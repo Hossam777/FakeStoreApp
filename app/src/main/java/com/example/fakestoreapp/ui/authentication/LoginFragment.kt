@@ -1,5 +1,6 @@
 package com.example.fakestoreapp.ui.authentication
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +10,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
-import com.example.fakestoreapp.utils.NetworkManager
+import com.example.fakestoreapp.ui.home.HomeActivity
 import com.example.fakestoreapp.utils.hideKeyboard
 import com.example.fakestoreapp.utils.isValidEmail
 import com.example.fakestoreapp.utils.isValidPassword
@@ -46,8 +47,8 @@ class LoginFragment : Fragment() {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
         authViewModel.user.observe(viewLifecycleOwner){
-            //navigate to home
-            Toast.makeText(requireContext(), "Loggedin", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), HomeActivity::class.java))
+            activity?.finish()
         }
         authViewModel.isLoading.observe(viewLifecycleOwner){
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE

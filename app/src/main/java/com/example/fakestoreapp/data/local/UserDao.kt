@@ -13,7 +13,7 @@ interface UserDao {
     suspend fun findByMail(mail: String): User?
 
     @Query("SELECT * FROM user")
-    fun getAllUsers(): List<User>
+    fun getAllUsers(): List<User>?
 
     @Query("SELECT * FROM user WHERE mail == :mail AND password == :password LIMIT 1")
     fun findByMailAndPassword(mail: String, password: String): Single<User>

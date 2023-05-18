@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(private val userDao: UserDao) {
     suspend fun checkIfEmailIsFound(mail: String): Boolean {
-        println(userDao.getAllUsers())
         var isFound = false
         userDao.findByMail(mail)?.let { isFound = true }
         return isFound

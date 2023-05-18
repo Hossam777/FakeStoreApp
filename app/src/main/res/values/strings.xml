@@ -9,4 +9,7 @@
     <string name="to_signup_click">To Signup click</string>
     <string name="name">Name</string>
     <string name="signup">Signup</string>
+    <string name="horizontal_products">Horizontal Products</string>
+    <string name="vertical_products">Vertical Products</string>
+    <string name="categories">Categories</string>
 </resources>
