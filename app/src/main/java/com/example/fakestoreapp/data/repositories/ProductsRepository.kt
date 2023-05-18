@@ -12,11 +12,13 @@ class ProductsRepository(
     private val networkManager: NetworkManager
     , private val savedProductsDao: SavedProductsDao
 ) {
-    fun getAllProducts(category: String?): Single<List<Product>>{
+    fun getAllProducts(category: String?, limit: Int?, sort: String?): Single<List<Product>>{
         return Single.create { singleEmitter ->
             val requestHashMap: HashMap<String?, Any?> = hashMapOf()
             var url = NetworkConstants.allProductsApi
             category?.let { url += "category/${category}" }
+            limit?.let { requestHashMap["limit"] = limit }
+            sort?.let { requestHashMap["sort"] = sort }
             networkManager.makeGetRequest(
                 url,
                 requestHashMap

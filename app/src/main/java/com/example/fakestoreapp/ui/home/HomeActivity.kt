@@ -3,6 +3,7 @@ package com.example.fakestoreapp.ui.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fakestoreapp.bases.BaseActivity
@@ -11,7 +12,7 @@ import com.example.fakestoreapp.ui.home.adapters.CategoryRecyclerAdapter
 import com.example.fakestoreapp.ui.home.adapters.ProductRecyclerAdapter
 import com.example.imageclassification.R
 import com.example.imageclassification.databinding.ActivityHomeBinding
-import com.example.imageclassification.databinding.CategoriesDialogBinding
+import com.example.imageclassification.databinding.FiltersDialogBinding
 import com.example.imageclassification.databinding.ProductDialogBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,8 +33,8 @@ class HomeActivity : BaseActivity() {
         val inflater = LayoutInflater.from(this)
         //intializing categories dialog
         categoriesDialog = MaterialAlertDialogBuilder(this)
-        val categoriesBindingDialog = CategoriesDialogBinding.inflate(inflater)
-        categoriesDialog.setView(categoriesBindingDialog.root)
+        val filtersBindingDialog = FiltersDialogBinding.inflate(inflater)
+        categoriesDialog.setView(filtersBindingDialog.root)
         val categoriesDialog = categoriesDialog.show()
         categoriesDialog.dismiss()
 
@@ -74,12 +75,12 @@ class HomeActivity : BaseActivity() {
         binding.horizontalProductsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.verticalProductsRecycler.adapter = verticalProductsAdapter
         binding.verticalProductsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        categoriesBindingDialog.dialogRecycler.adapter = categoriesAdapter
-        categoriesBindingDialog.dialogRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        filtersBindingDialog.dialogRecycler.adapter = categoriesAdapter
+        filtersBindingDialog.dialogRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         //initializing viewmodel observers
         homeViewModel.dataSetUp.observe(this){
-            if(it == 2){
+            if(it >= 2){
                 homeViewModel.products.value?.let { it1 ->
                     homeViewModel.savedProducts.value?.let { it2 ->
                         horizontalProductsAdapter.setItems(it1, it2.toMutableList())
@@ -103,6 +104,21 @@ class HomeActivity : BaseActivity() {
         homeViewModel.savedProducts.observe(this){
             println(it.toString())
         }
+        filtersBindingDialog.sortGroup.setOnCheckedChangeListener { group, checkedId ->
+            if(checkedId == R.id.sortASC) homeViewModel.sortStrategy.value = "ASC"
+            else homeViewModel.sortStrategy.value = "ASC"
+            homeViewModel.getProducts()
+            categoriesDialog.dismiss()
+        }
+        filtersBindingDialog.limitSeekbar.setOnSeekBarChangeListener((object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                homeViewModel.limitProducts.value = progress
+                homeViewModel.getProducts()
+                categoriesDialog.dismiss()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        }))
     }
     private fun handleSavingProducts(product: Product, favourite: Boolean){
         if(favourite) homeViewModel.addProductToSavedProducts(product)
