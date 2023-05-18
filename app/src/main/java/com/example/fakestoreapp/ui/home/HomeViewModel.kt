@@ -20,7 +20,7 @@ class HomeViewModel @Inject constructor(
     var products: MutableLiveData<List<Product>> = MutableLiveData()
     var categories: MutableLiveData<List<String>> = MutableLiveData()
 
-    private fun getProducts(category: String? = null){
+    fun getProducts(category: String? = null){
         isLoading.value = true
         getProductsUseCase.getProducts(category)
             .subscribeOn(Schedulers.io())
@@ -33,7 +33,7 @@ class HomeViewModel @Inject constructor(
                 errMessage.value = throwable.getNetworkError()
             })
     }
-    private fun getAllCategories(){
+    fun getAllCategories(){
         isLoading.value = true
         getAllCategoriesUseCase.getAllCategories()
             .subscribeOn(Schedulers.io())
